@@ -1,0 +1,10 @@
+[
+    {
+        "doc": "1234567890",
+        "nombre": "Victor",
+        "apellido": "Espinosa",
+        "correo": "vesp@correo.com",
+        "tiempo": 30,
+        "prestamos": 0
+    }
+]
