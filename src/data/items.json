@@ -6,5 +6,13 @@
         "precio": 70000.0,
         "estado": "Bueno (Desgaste m\u00ednimo)",
         "disponible": false
+    },
+    {
+        "id": "LIB-L4QG",
+        "nombre": "El tictanic",
+        "categoria": "Libros",
+        "precio": 80000.0,
+        "estado": "Bueno (Desgaste m\u00ednimo)",
+        "disponible": true
     }
 ]

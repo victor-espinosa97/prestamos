@@ -28,5 +28,15 @@
         "fecha_inicio": "2026-05-14 19:18:46",
         "dias_pactados": 10,
         "activo": true
+    },
+    {
+        "usuario_doc": "1234567890",
+        "usuario_nombre": "Camila Castro",
+        "item_id": "LIB-L4QG",
+        "item_nombre": "El tictanic",
+        "item_precio": 80000.0,
+        "fecha_inicio": "2026-05-14 21:41:10",
+        "dias_pactados": 5,
+        "activo": false
     }
 ]

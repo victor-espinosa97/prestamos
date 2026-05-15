@@ -22,7 +22,7 @@ def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def menu_principal():
-    """Orquestador principal de la aplicación EcoPrestamos."""
+    """Orquestador principal de la aplicación Data File Solution."""
     # 1. Preparar el entorno de directorios
     asegurar_entorno()
 
@@ -38,7 +38,7 @@ def menu_principal():
     while True:
         limpiar_pantalla()
         print("===========================================")
-        print("            SISTEMA ECOPRESTAMOS           ")
+        print("            SISTEMA DATA FILE SOLUTION     ")
         print("        Gestión Eficiente de Activos       ")
         print("===========================================")
         print("  1. Registrar Usuario")
