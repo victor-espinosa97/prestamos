@@ -1,0 +1,10 @@
+[
+    {
+        "id": "VID-DDSY",
+        "nombre": "Video juego 1",
+        "categoria": "Videojuegos",
+        "precio": 70000.0,
+        "estado": "Bueno (Desgaste m\u00ednimo)",
+        "disponible": false
+    }
+]

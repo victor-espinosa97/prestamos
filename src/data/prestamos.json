@@ -1,0 +1,32 @@
+[
+    {
+        "usuario_doc": "1030333111",
+        "usuario_nombre": "Lina Duque",
+        "item_id": "VID-DDSY",
+        "item_nombre": "Video juego 1",
+        "item_precio": 70000.0,
+        "fecha_inicio": "2026-05-14 19:12:54",
+        "dias_pactados": 10,
+        "activo": false
+    },
+    {
+        "usuario_doc": "1030333111",
+        "usuario_nombre": "Lina Duque",
+        "item_id": "VID-DDSY",
+        "item_nombre": "Video juego 1",
+        "item_precio": 70000.0,
+        "fecha_inicio": "2026-05-14 19:17:47",
+        "dias_pactados": 10,
+        "activo": false
+    },
+    {
+        "usuario_doc": "1030333111",
+        "usuario_nombre": "Lina Duque",
+        "item_id": "VID-DDSY",
+        "item_nombre": "Video juego 1",
+        "item_precio": 70000.0,
+        "fecha_inicio": "2026-05-14 19:18:46",
+        "dias_pactados": 10,
+        "activo": true
+    }
+]
