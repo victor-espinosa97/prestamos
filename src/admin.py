@@ -1,91 +1,149 @@
 import os
 
 def limpiar_pantalla():
-    # Limpia la consola según el sistema operativo
+    """Limpia la consola según el sistema operativo."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def login_admin():
-    """Validación de acceso con credenciales protegidas."""
-    # En una app real, esto iría cifrado, pero para el proyecto académico usamos un dict
+    """
+    Valida el acceso al panel de administración.
+    Compara usuario y contraseña contra una lista predefinida.
+    """
+    # Lista de credenciales permitidas (usuario: contraseña)
     credenciales = {
-        "admin": "1234",
+        "admin":      "1234",
         "lina.duque": "udea2026",
-        "camila": "udea2026"
+        "camila":     "udea2026"
     }
-    
-    print("\n" + "="*30)
+
+    print("\n" + "=" * 30)
     print("      ACCESO RESTRINGIDO")
-    print("="*30)
+    print("=" * 30)
+
     usuario = input("Usuario: ").strip()
-    clave = input("Contraseña: ").strip()
-    
-    if credenciales.get(usuario) == clave:
-        return True
-    
-    print("\033[91mError: Credenciales no válidas.\033[0m") # Texto en rojo
+    clave   = input("Contrasena: ").strip()
+
+    # Verificar si el usuario existe y la contraseña coincide
+    if usuario in credenciales:
+        if credenciales[usuario] == clave:
+            print("  Acceso concedido. Bienvenido, " + usuario + "!")
+            return True
+
+    print("  ERROR: Usuario o contrasena incorrectos. Acceso denegado.")
     return False
 
-def mostrar_lista_usuarios(usuarios):
-    print(f"\n{'DOCUMENTO':<15} | {'NOMBRE COMPLETO':<30} | {'PRESTAMOS'}")
-    print("-" * 60)
-    for u in usuarios:
-        nombre = f"{u['nombre']} {u['apellido']}"
-        print(f"{u['doc']:<15} | {nombre[:30]:<30} | {u['prestamos_realizados']}")
 
-def determinar_extremos_usuarios(usuarios):
-    if not usuarios:
-        print("No hay usuarios para analizar.")
+# ------------------------------------------------------------------
+# Funciones de reportes
+# ------------------------------------------------------------------
+
+def mostrar_metricas(prestamos, ventas):
+    """Muestra un resumen de métricas generales del sistema."""
+    total_prestamos = len(prestamos)
+
+    # Contar devueltos: prestamos que ya no están activos
+    total_devueltos = 0
+    for p in prestamos:
+        if p["activo"] == False:
+            total_devueltos = total_devueltos + 1
+
+    total_ventas = len(ventas)
+
+    # Calcular recaudo total sumando el campo 'total' de cada venta
+    recaudo = 0
+    for v in ventas:
+        recaudo = recaudo + v["total"]
+
+    print("\n  --- METRICAS GENERALES DEL SISTEMA ---")
+    print("  Total de prestamos registrados : " + str(total_prestamos))
+    print("  Total de items devueltos       : " + str(total_devueltos))
+    print("  Total de ventas realizadas     : " + str(total_ventas))
+    print("  Total recaudado (ventas)       : $" + "{:,.2f}".format(recaudo))
+
+
+def mostrar_lista_usuarios(usuarios):
+    """Muestra la tabla de todos los usuarios registrados."""
+    if len(usuarios) == 0:
+        print("\n  No hay usuarios registrados.")
         return
 
-    # Usamos funciones de orden superior para eficiencia
-    u_max = max(usuarios, key=lambda x: x['prestamos_realizados'])
-    u_min = min(usuarios, key=lambda x: x['prestamos_realizados'])
+    print("\n  --- LISTA DE USUARIOS REGISTRADOS ---")
+    print("  {:<15} {:<25} {:<10}".format("Documento", "Nombre completo", "Prestamos"))
+    print("  " + "-" * 55)
 
-    print(f"\n🏆 Usuario con mayor cantidad de préstamos: {u_max['nombre']} {u_max['apellido']} ({u_max['prestamos_realizados']})")
-    print(f"📉 Usuario con menor cantidad de préstamos: {u_min['nombre']} {u_min['apellido']} ({u_min['prestamos_realizados']})")
+    for u in usuarios:
+        nombre_completo = u["nombre"] + " " + u["apellido"]
+        print("  {:<15} {:<25} {:<10}".format(
+            u["doc"],
+            nombre_completo[:24],
+            str(u["prestamos_realizados"])
+        ))
 
-def mostrar_reportes_financieros(prestamos, ventas):
-    # Lógica de cálculo de métricas
-    total_prestamos = len(prestamos)
-    total_devueltos = len([p for p in prestamos if not p['activo']])
-    total_ventas = len(ventas)
-    
-    # Recaudación: Suma de subtotales + impuestos
-    recaudo_total = sum(v['total'] for v in ventas)
-    
-    print(f"\n--- MÉTRICAS GENERALES ---")
-    print(f"✅ Total de préstamos registrados: {total_prestamos}")
-    print(f"📦 Total de ítems devueltos:       {total_devueltos}")
-    print(f"💰 Total de ventas realizadas:     {total_ventas}")
-    print(f"💵 Total pago realizado (Recaudo): ${recaudo_total:,.2f}")
+
+def mostrar_extremos_usuarios(usuarios):
+    """Muestra el usuario con más y con menos préstamos realizados."""
+    if len(usuarios) == 0:
+        print("\n  No hay usuarios para analizar.")
+        return
+
+    # Buscar máximo y mínimo recorriendo la lista con if/else
+    usuario_mayor = usuarios[0]
+    usuario_menor = usuarios[0]
+
+    for u in usuarios:
+        if u["prestamos_realizados"] > usuario_mayor["prestamos_realizados"]:
+            usuario_mayor = u
+        if u["prestamos_realizados"] < usuario_menor["prestamos_realizados"]:
+            usuario_menor = u
+
+    print("\n  --- USUARIOS DESTACADOS ---")
+    print("  Mayor cantidad de prestamos:")
+    print("    Nombre    : " + usuario_mayor["nombre"] + " " + usuario_mayor["apellido"])
+    print("    Documento : " + usuario_mayor["doc"])
+    print("    Prestamos : " + str(usuario_mayor["prestamos_realizados"]))
+
+    print("\n  Menor cantidad de prestamos:")
+    print("    Nombre    : " + usuario_menor["nombre"] + " " + usuario_menor["apellido"])
+    print("    Documento : " + usuario_menor["doc"])
+    print("    Prestamos : " + str(usuario_menor["prestamos_realizados"]))
+
+
+# ------------------------------------------------------------------
+# Menú del panel de administración
+# ------------------------------------------------------------------
 
 def menu_admin(usuarios, items, prestamos, ventas):
-    """Controlador principal del submódulo administrativo."""
+    """Submenú del módulo administrativo."""
     while True:
-        print("\n" + "╔" + "═"*38 + "╗")
-        print("║      PANEL DE CONTROL ADMINISTRATIVO   ║")
-        print("╚" + "═"*38 + "╝")
-        print("1. Ver Reporte de Métricas Totales")
-        print("2. Ver Lista de Usuarios Registrados")
-        print("3. Ver Usuario Líder vs Usuario Menor")
-        print("0. Salir al Menú Principal")
-        
-        opcion = input("\nSeleccione reporte: ")
+        print("\n" + "=" * 42)
+        print("      PANEL DE ADMINISTRACION")
+        print("=" * 42)
+        print("  1. Ver metricas generales")
+        print("  2. Ver lista de usuarios")
+        print("  3. Ver usuario con mas y menos prestamos")
+        print("  0. Volver al menu principal")
+        print("=" * 42)
+
+        opcion = input("  Seleccione una opcion: ").strip()
 
         if opcion == "1":
             limpiar_pantalla()
-            mostrar_reportes_financieros(prestamos, ventas)
+            mostrar_metricas(prestamos, ventas)
+
         elif opcion == "2":
             limpiar_pantalla()
             mostrar_lista_usuarios(usuarios)
+
         elif opcion == "3":
             limpiar_pantalla()
-            determinar_extremos_usuarios(usuarios)
+            mostrar_extremos_usuarios(usuarios)
+
         elif opcion == "0":
-            print("Saliendo del panel administrativo...")
+            print("  Saliendo del panel administrativo...")
             break
         else:
-            print("Opción no válida.")
-        
-        input("\nPresione Enter para continuar...")
+            print("  ERROR: Opcion no valida. Intente de nuevo.")
+
+        input("\n  Presione Enter para continuar...")
         limpiar_pantalla()

@@ -1,71 +1,151 @@
 import random
 import string
+import archivos
 
+DATA_ITEMS = "data/items.json"
+
+# Diccionario de categorías disponibles
 CATEGORIAS = {
-    "1": ("Videojuegos", "VID"),
-    "2": ("Libros", "LIB"),
-    "3": ("Música y video", "MUS"),
-    "4": ("Herramientas", "HER"),
-    "5": ("Dinero", "DIN"),
-    "6": ("Misceláneo y varios", "MIS")
+    "1": ("Videojuegos",       "VID"),
+    "2": ("Libros",            "LIB"),
+    "3": ("Musica y video",    "MUS"),
+    "4": ("Herramientas",      "HER"),
+    "5": ("Dinero",            "DIN"),
+    "6": ("Miscelaneo",        "MIS")
 }
+
 
 def calcular_estado_difuso(funcionalidad, estetica):
     """
     Aplica lógica difusa simple mediante un promedio ponderado
     para determinar la calidad del ítem.
+    - Funcionalidad tiene más peso (70%) que la estética (30%).
     """
     puntaje = (funcionalidad * 0.7) + (estetica * 0.3)
-    
-    if puntaje >= 9: return "Excelente (Como nuevo)"
-    if puntaje >= 7: return "Bueno (Desgaste mínimo)"
-    if puntaje >= 5: return "Regular (Funcional con detalles)"
-    return "Malo (Requiere mantenimiento o reposición)"
+
+    if puntaje >= 9:
+        return "Excelente (Como nuevo)"
+    elif puntaje >= 7:
+        return "Bueno (Desgaste minimo)"
+    elif puntaje >= 5:
+        return "Regular (Funcional con detalles)"
+    else:
+        return "Malo (Requiere mantenimiento)"
+
 
 def generar_id(prefijo):
-    # Prefijo de categoría + 4 caracteres alfanuméricos únicos
-    aleatorio = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-    return f"{prefijo}-{aleatorio}"
+    """Genera un ID único con el prefijo de categoría + 4 caracteres aleatorios."""
+    caracteres = string.ascii_uppercase + string.digits
+    aleatorio = ""
+    for _ in range(4):
+        aleatorio = aleatorio + random.choice(caracteres)
+    return prefijo + "-" + aleatorio
+
 
 def registrar_item(items):
-    print("\n--- Registro de Ítem ---")
-    nombre = input("Nombre del ítem: ")
-    if len(nombre) < 3:
-        print("Error: El nombre es muy corto.")
-        return
+    """
+    Registra un nuevo ítem en el inventario.
+    Cada campo tiene su propio bucle de reintento.
+    Al finalizar, guarda los datos de inmediato.
+    """
+    print("\n--- Registro de Nuevo Item ---")
 
-    print("Seleccione Categoría:")
-    for k, v in CATEGORIAS.items():
-        print(f"{k}. {v[0]}")
-    
-    opcion = input("Opción: ")
-    if opcion not in CATEGORIAS:
-        print("Error: Categoría no válida.")
-        return
-    
-    cat_nombre, cat_prefijo = CATEGORIAS[opcion]
+    # --- Campo: Nombre del ítem ---
+    nombre = ""
+    while True:
+        nombre = input("Nombre del item: ").strip()
+        if len(nombre) >= 3:
+            break
+        else:
+            print("  ERROR: El nombre debe tener al menos 3 caracteres. Intente de nuevo.")
 
-    try:
-        precio = float(input("Precio de compra: "))
-        print("\nValoración de estado (Escala 1-10):")
-        f = int(input("Calidad de funcionamiento: "))
-        e = int(input("Estado estético/físico: "))
-        if not (1 <= f <= 10 and 1 <= e <= 10):
-            raise ValueError
-    except ValueError:
-        print("Error: Ingrese valores numéricos válidos.")
-        return
+    # --- Campo: Categoría ---
+    cat_nombre = ""
+    cat_prefijo = ""
+    while True:
+        print("\n  Categorias disponibles:")
+        for k, v in CATEGORIAS.items():
+            print("    " + k + ". " + v[0])
+        opcion = input("  Seleccione una opcion (1-6): ").strip()
 
-    estado_final = calcular_estado_difuso(f, e)
+        if opcion in CATEGORIAS:
+            cat_nombre  = CATEGORIAS[opcion][0]
+            cat_prefijo = CATEGORIAS[opcion][1]
+            break
+        else:
+            print("  ERROR: Opcion no valida. Debe elegir un numero del 1 al 6.")
 
+    # --- Campo: Precio de compra ---
+    precio = 0.0
+    while True:
+        entrada = input("Precio de compra (solo numeros): ").strip()
+
+        # Verificamos que sea un número válido (puede tener punto decimal)
+        es_numero = True
+        puntos = 0
+        for caracter in entrada:
+            if caracter == ".":
+                puntos = puntos + 1
+            elif not caracter.isdigit():
+                es_numero = False
+                break
+
+        if not es_numero or puntos > 1 or len(entrada) == 0:
+            print("  ERROR: Ingrese un valor numerico valido (ej: 25000 o 25000.50).")
+            continue
+
+        precio = float(entrada)
+
+        if precio <= 0:
+            print("  ERROR: El precio debe ser mayor a cero.")
+        else:
+            break
+
+    # --- Campo: Estado del ítem (lógica difusa) ---
+    print("\n  Valoracion del estado del item (escala del 1 al 10):")
+
+    funcionalidad = 0
+    while True:
+        entrada = input("  Calidad de funcionamiento (1-10): ").strip()
+        if not entrada.isdigit():
+            print("  ERROR: Ingrese un numero entero del 1 al 10.")
+            continue
+        funcionalidad = int(entrada)
+        if funcionalidad >= 1 and funcionalidad <= 10:
+            break
+        else:
+            print("  ERROR: El valor debe estar entre 1 y 10.")
+
+    estetica = 0
+    while True:
+        entrada = input("  Estado estetico/fisico (1-10): ").strip()
+        if not entrada.isdigit():
+            print("  ERROR: Ingrese un numero entero del 1 al 10.")
+            continue
+        estetica = int(entrada)
+        if estetica >= 1 and estetica <= 10:
+            break
+        else:
+            print("  ERROR: El valor debe estar entre 1 y 10.")
+
+    # Calcular estado final con lógica difusa
+    estado_final = calcular_estado_difuso(funcionalidad, estetica)
+
+    # --- Crear y guardar el ítem ---
     nuevo_item = {
-        "id": generar_id(cat_prefijo),
-        "nombre": nombre,
-        "categoria": cat_nombre,
-        "precio": precio,
-        "estado": estado_final,
+        "id":         generar_id(cat_prefijo),
+        "nombre":     nombre,
+        "categoria":  cat_nombre,
+        "precio":     precio,
+        "estado":     estado_final,
         "disponible": True
     }
 
     items.append(nuevo_item)
-    print(f"Item registrado con ID: {nuevo_item['id']} | Estado: {estado_final} ✔")
+
+    # Guardado inmediato
+    archivos.guardar_datos(DATA_ITEMS, items)
+
+    print("\n  Item registrado con exito!")
+    print("  ID asignado : " + nuevo_item["id"])
+    print("  Estado      : " + estado_final)
