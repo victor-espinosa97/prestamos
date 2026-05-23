@@ -1,15 +1,6 @@
 import os
-import archivos
 import usuarios
 import items
-import prestamos
-import admin
-
-# Rutas de los archivos de datos
-DATA_USUARIOS = "data/usuarios.json"
-DATA_ITEMS    = "data/items.json"
-DATA_PRESTAMOS = "data/prestamos.json"
-DATA_VENTAS   = "data/ventas.json"
 
 
 def asegurar_entorno():
@@ -38,13 +29,8 @@ def menu_principal():
     asegurar_entorno()
 
     # 2. Cargar todos los datos en memoria al arrancar
-    list_usuarios  = archivos.cargar_datos(DATA_USUARIOS)
-    list_items     = archivos.cargar_datos(DATA_ITEMS)
-    list_prestamos = archivos.cargar_datos(DATA_PRESTAMOS)
-    list_ventas    = archivos.cargar_datos(DATA_VENTAS)
-
-    # 3. Proceso automático: detectar préstamos con mora > 30 días
-    prestamos.procesar_ventas_automaticas(list_prestamos, list_items, list_ventas)
+    list_usuarios  = []
+    list_items     = []
 
     # 4. Ciclo principal del menú
     while True:
@@ -74,20 +60,19 @@ def menu_principal():
 
         elif opcion == "3":
             limpiar_pantalla()
-            prestamos.registrar_prestamo(list_usuarios, list_items, list_prestamos)
+            print("Registrar Prestamo(Pendiente)")
 
         elif opcion == "4":
             limpiar_pantalla()
-            prestamos.registrar_devolucion(list_prestamos, list_items)
+            print("Registrar y Certificar Devolucion(Pendiente)")
 
         elif opcion == "5":
             limpiar_pantalla()
-            prestamos.consultar_estado_general(list_prestamos)
+            print("Consultar Estado General de Prestamos(Pendiente)")
 
         elif opcion == "6":
             limpiar_pantalla()
-            if admin.login_admin():
-                admin.menu_admin(list_usuarios, list_items, list_prestamos, list_ventas)
+            print("Panel de Administracion(Pendiente)")
 
         elif opcion == "0":
             print("\n  Hasta pronto!")

@@ -1,8 +1,5 @@
 import random
 import string
-import archivos
-
-DATA_ITEMS = "data/items.json"
 
 # Diccionario de categorías disponibles
 CATEGORIAS = {
@@ -142,9 +139,6 @@ def registrar_item(items):
     }
 
     items.append(nuevo_item)
-
-    # Guardado inmediato
-    archivos.guardar_datos(DATA_ITEMS, items)
 
     print("\n  Item registrado con exito!")
     print("  ID asignado : " + nuevo_item["id"])

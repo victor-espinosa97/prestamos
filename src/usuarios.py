@@ -1,7 +1,3 @@
-import archivos
-
-DATA_USUARIOS = "data/usuarios.json"
-
 # ------------------------------------------------------------------
 # Funciones de validación (sin expresiones regulares)
 # ------------------------------------------------------------------
@@ -41,36 +37,13 @@ def validar_documento(doc):
 
 def validar_correo(correo):
     """
-    Valida que el correo tenga una '@' y termine en '.com'.
-    Se hace con operaciones básicas de string.
+    Que tenga el correo
     """
     # Condición 1: debe tener exactamente una arroba
-    if correo.count("@") != 1:
-        return False
+    if correo.endswith('@correo.com'):
+        return True
 
-    # Separamos en la parte antes y después del @
-    partes = correo.split("@")
-    parte_antes = partes[0]   # ej: "juan.perez"
-    parte_despues = partes[1] # ej: "gmail.com"
-
-    # Condición 2: la parte antes del @ no puede estar vacía
-    if len(parte_antes) == 0:
-        return False
-
-    # Condición 3: debe terminar en .com
-    if not parte_despues.endswith(".com"):
-        return False
-
-    # Condición 4: no puede haber espacios en el correo
-    if " " in correo:
-        return False
-
-    # Condición 5: debe haber algo antes del .com (el nombre del dominio)
-    dominio = parte_despues.replace(".com", "")
-    if len(dominio) == 0:
-        return False
-
-    return True
+    return False
 
 
 # ------------------------------------------------------------------
@@ -139,11 +112,11 @@ def registrar_usuario(usuarios):
     # --- Campo: Correo ---
     correo = ""
     while True:
-        correo = input("Correo electrónico (ej: nombre@dominio.com): ").strip()
+        correo = input("Correo electrónico (ej: nombre@correo.com): ").strip()
         if validar_correo(correo):
             break
         else:
-            print("  ERROR: Correo inválido. Debe tener '@' y terminar en '.com'. Intente de nuevo.")
+            print("  ERROR: Correo inválido. Debe tener '@correo.com'. Intente de nuevo.")
 
     # --- Campo: Tiempo de préstamo ---
     tiempo = 0
@@ -174,8 +147,5 @@ def registrar_usuario(usuarios):
     }
 
     usuarios.append(nuevo_usuario)
-
-    # Guardado inmediato sin esperar al menú principal
-    archivos.guardar_datos(DATA_USUARIOS, usuarios)
 
     print(f"\n  Usuario '{nombre} {apellido}' registrado con exito! ")
