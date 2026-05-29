@@ -1,0 +1,11 @@
+==========================================
+           FACTURA DE VENTA              
+==========================================
+Cliente  : Lina Duque
+Producto : Laptop ASUS ROG Strix (ID: TEC-001)
+Motivo   : Excedio el tiempo maximo de prestamo (30 dias)
+------------------------------------------
+Subtotal              : $1,500.00
+Impuesto Conchudez 23%: $345.00
+TOTAL A PAGAR         : $1,845.00
+==========================================

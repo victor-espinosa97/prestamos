@@ -1,18 +1,23 @@
+# ============================================================
+# MODULO: usuarios.py
+# DESCRIPCION: Registro y validacion de usuarios del sistema
+# ============================================================
+
+
 # ------------------------------------------------------------------
-# Funciones de validación (sin expresiones regulares)
+# Funciones de validacion
 # ------------------------------------------------------------------
 
 def validar_nombre_apellido(texto):
     """
-    Valida que el texto tenga al menos 3 caracteres y no contenga números.
-    Retorna True si es válido, False si no.
+    Valida que el texto tenga al menos 3 caracteres y no contenga numeros.
+    Retorna True si es valido, False si no.
     """
-    # Condición 1: longitud mínima de 3
+    # Condicion 1: longitud minima de 3
     if len(texto) < 3:
         return False
 
-    # Condición 2: no puede tener números
-    # Recorremos cada caracter y si alguno es dígito(numero), no es válido
+    # Condicion 2: no puede tener numeros
     for caracter in texto:
         if caracter.isdigit():
             return False
@@ -22,13 +27,13 @@ def validar_nombre_apellido(texto):
 
 def validar_documento(doc):
     """
-    Valida que el documento tenga entre 3 y 15 dígitos y sea solo números.
+    Valida que el documento tenga entre 3 y 15 digitos y sea solo numeros.
     """
-    # Condición 1: solo números
+    # Condicion 1: solo numeros
     if not doc.isdigit():
         return False
 
-    # Condición 2: longitud entre 3 y 15
+    # Condicion 2: longitud entre 3 y 15
     if len(doc) < 3 or len(doc) > 15:
         return False
 
@@ -40,22 +45,21 @@ def validar_correo(correo):
     Que tenga el correo
     """
     # Condición 1: debe tener exactamente una arroba
-    if correo.endswith('@correo.com'):
+    if correo.endswith('@udea.edu.co'):
         return True
 
     return False
 
 
 # ------------------------------------------------------------------
-# Función principal de registro
+# Funcion principal de registro
 # ------------------------------------------------------------------
 
 def registrar_usuario(usuarios):
     """
     Registra un nuevo usuario en el sistema.
-    Cada campo tiene su propio bucle de reintento: si el dato es incorrecto,
+    Cada campo tiene su propio bucle: si el dato es incorrecto,
     el programa muestra el error y vuelve a pedir ESE MISMO campo.
-    Al finalizar, guarda los datos de inmediato.
     """
     print("\n--- Registro de Nuevo Usuario ---")
 
@@ -69,7 +73,7 @@ def registrar_usuario(usuarios):
             if len(nombre) < 3:
                 print("  ERROR: El nombre debe tener al menos 3 letras. Intente de nuevo.")
             else:
-                print("  ERROR: El nombre no puede contener números. Intente de nuevo.")
+                print("  ERROR: El nombre no puede contener numeros. Intente de nuevo.")
 
     # --- Campo: Apellido ---
     apellido = ""
@@ -81,23 +85,21 @@ def registrar_usuario(usuarios):
             if len(apellido) < 3:
                 print("  ERROR: El apellido debe tener al menos 3 letras. Intente de nuevo.")
             else:
-                print("  ERROR: El apellido no puede contener números. Intente de nuevo.")
-
-    # --- Validar que el documento no esté ya registrado ---
-    # (lo hacemos antes de pedirlo para no molestar al usuario)
+                print("  ERROR: El apellido no puede contener numeros. Intente de nuevo.")
 
     # --- Campo: Documento ---
     doc = ""
     while True:
-        doc = input("Número de documento (solo números, 3-15 dígitos): ").strip()
+        doc = input("Numero de documento (solo numeros, 3-15 digitos): ").strip()
+
         if not validar_documento(doc):
             if not doc.isdigit():
-                print("  ERROR: El documento solo puede contener números. Intente de nuevo.")
+                print("  ERROR: El documento solo puede contener numeros. Intente de nuevo.")
             else:
-                print("  ERROR: El documento debe tener entre 3 y 15 dígitos. Intente de nuevo.")
+                print("  ERROR: El documento debe tener entre 3 y 15 digitos. Intente de nuevo.")
             continue
 
-        # Verificar que el documento no esté duplicado
+        # Verificar que el documento no este duplicado
         ya_existe = False
         for u in usuarios:
             if u["doc"] == doc:
@@ -112,21 +114,20 @@ def registrar_usuario(usuarios):
     # --- Campo: Correo ---
     correo = ""
     while True:
-        correo = input("Correo electrónico (ej: nombre@correo.com): ").strip()
+        correo = input("Correo electronico (ej: nombre@gmail.com): ").strip()
         if validar_correo(correo):
             break
         else:
-            print("  ERROR: Correo inválido. Debe tener '@correo.com'. Intente de nuevo.")
+            print("  ERROR: Correo invalido. Debe tener '@' y terminar en '.com'. Intente de nuevo.")
 
-    # --- Campo: Tiempo de préstamo ---
+    # --- Campo: Tiempo de prestamo ---
     tiempo = 0
     while True:
-        print("  Opciones de tiempo: 5, 10, 15 o 30 días")
-        entrada = input("  Seleccione el tiempo de préstamo: ").strip()
+        print("  Opciones de tiempo: 5, 10, 15 o 30 dias")
+        entrada = input("  Seleccione el tiempo de prestamo: ").strip()
 
-        # Verificamos que sea número antes de convertir
         if not entrada.isdigit():
-            print("  ERROR: Debe ingresar un número. Intente de nuevo.")
+            print("  ERROR: Debe ingresar un numero. Intente de nuevo.")
             continue
 
         tiempo = int(entrada)
@@ -134,18 +135,18 @@ def registrar_usuario(usuarios):
         if tiempo == 5 or tiempo == 10 or tiempo == 15 or tiempo == 30:
             break
         else:
-            print("  ERROR: Tiempo no permitido. Solo se aceptan 5, 10, 15 o 30 días.")
+            print("  ERROR: Tiempo no permitido. Solo se aceptan 5, 10, 15 o 30 dias.")
 
     # --- Guardar usuario ---
     nuevo_usuario = {
-        "doc": doc,
-        "nombre": nombre,
-        "apellido": apellido,
-        "correo": correo,
-        "tiempo": tiempo,
+        "doc":                  doc,
+        "nombre":               nombre,
+        "apellido":             apellido,
+        "correo":               correo,
+        "tiempo":               tiempo,
         "prestamos_realizados": 0
     }
 
     usuarios.append(nuevo_usuario)
 
-    print(f"\n  Usuario '{nombre} {apellido}' registrado con exito! ")
+    print("\n  Usuario '" + nombre + " " + apellido + "' registrado con exito!")

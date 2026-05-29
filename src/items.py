@@ -1,22 +1,27 @@
+# ============================================================
+# MODULO: items.py
+# DESCRIPCION: Registro de items (objetos a prestar)
+# ============================================================
+
 import random
 import string
 
-# Diccionario de categorías disponibles
+# Diccionario de categorias disponibles
+# Clave: numero de opcion | Valor: (nombre de categoria, prefijo para el ID)
 CATEGORIAS = {
-    "1": ("Videojuegos",       "VID"),
-    "2": ("Libros",            "LIB"),
-    "3": ("Musica y video",    "MUS"),
-    "4": ("Herramientas",      "HER"),
-    "5": ("Dinero",            "DIN"),
-    "6": ("Miscelaneo",        "MIS")
+    "1": ("Videojuegos",    "VID"),
+    "2": ("Libros",         "LIB"),
+    "3": ("Musica y video", "MUS"),
+    "4": ("Herramientas",   "HER"),
+    "5": ("Dinero",         "DIN"),
+    "6": ("Miscelaneo",     "MIS")
 }
 
 
 def calcular_estado_difuso(funcionalidad, estetica):
     """
-    Aplica lógica difusa simple mediante un promedio ponderado
-    para determinar la calidad del ítem.
-    - Funcionalidad tiene más peso (70%) que la estética (30%).
+    Logica difusa simple: combina funcionalidad (70%) y estetica (30%)
+    para determinar la calidad del item con un puntaje ponderado.
     """
     puntaje = (funcionalidad * 0.7) + (estetica * 0.3)
 
@@ -31,7 +36,10 @@ def calcular_estado_difuso(funcionalidad, estetica):
 
 
 def generar_id(prefijo):
-    """Genera un ID único con el prefijo de categoría + 4 caracteres aleatorios."""
+    """
+    Genera un ID unico con el prefijo de la categoria + 4 caracteres aleatorios.
+    Ejemplo: VID-A3K9, LIB-X7B2
+    """
     caracteres = string.ascii_uppercase + string.digits
     aleatorio = ""
     for _ in range(4):
@@ -41,13 +49,12 @@ def generar_id(prefijo):
 
 def registrar_item(items):
     """
-    Registra un nuevo ítem en el inventario.
-    Cada campo tiene su propio bucle de reintento.
-    Al finalizar, guarda los datos de inmediato.
+    Registra un nuevo item en el inventario.
+    Valida cada campo con su propio bucle de reintento.
     """
     print("\n--- Registro de Nuevo Item ---")
 
-    # --- Campo: Nombre del ítem ---
+    # --- Campo: Nombre del item ---
     nombre = ""
     while True:
         nombre = input("Nombre del item: ").strip()
@@ -56,8 +63,8 @@ def registrar_item(items):
         else:
             print("  ERROR: El nombre debe tener al menos 3 caracteres. Intente de nuevo.")
 
-    # --- Campo: Categoría ---
-    cat_nombre = ""
+    # --- Campo: Categoria ---
+    cat_nombre  = ""
     cat_prefijo = ""
     while True:
         print("\n  Categorias disponibles:")
@@ -75,11 +82,11 @@ def registrar_item(items):
     # --- Campo: Precio de compra ---
     precio = 0.0
     while True:
-        entrada = input("Precio de compra (solo numeros): ").strip()
+        entrada = input("Precio de compra (solo numeros, ej: 25000): ").strip()
 
-        # Verificamos que sea un número válido (puede tener punto decimal)
+        # Verificar que sea un numero valido (puede tener punto decimal)
         es_numero = True
-        puntos = 0
+        puntos    = 0
         for caracter in entrada:
             if caracter == ".":
                 puntos = puntos + 1
@@ -98,7 +105,7 @@ def registrar_item(items):
         else:
             break
 
-    # --- Campo: Estado del ítem (lógica difusa) ---
+    # --- Campo: Estado del item (logica difusa) ---
     print("\n  Valoracion del estado del item (escala del 1 al 10):")
 
     funcionalidad = 0
@@ -125,10 +132,10 @@ def registrar_item(items):
         else:
             print("  ERROR: El valor debe estar entre 1 y 10.")
 
-    # Calcular estado final con lógica difusa
+    # Calcular estado final con logica difusa
     estado_final = calcular_estado_difuso(funcionalidad, estetica)
 
-    # --- Crear y guardar el ítem ---
+    # --- Crear y guardar el item ---
     nuevo_item = {
         "id":         generar_id(cat_prefijo),
         "nombre":     nombre,
@@ -142,4 +149,5 @@ def registrar_item(items):
 
     print("\n  Item registrado con exito!")
     print("  ID asignado : " + nuevo_item["id"])
+    print("  Categoria   : " + cat_nombre)
     print("  Estado      : " + estado_final)
