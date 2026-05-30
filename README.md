@@ -31,6 +31,12 @@ Crear el entorno de desarrollo, IMPORTANTE DONDE ESTE EL ARCHIVO main.py ejecuta
 python3 -m venv venv 
 ````
 
+Instalar libreria para PDF
+
+````
+pip install reportlab 
+````
+
 Activar entorno
 Mac / Linux
 
