@@ -31,18 +31,20 @@ def validar_documento(doc):
 
 def validar_correo(correo):
     # Verifica que el correo tenga una @ y termine en .com
+    # NO SE ADMINTES CORROES QUE NO TERMINEN EN .COM POR EJEMPLO: @udea.edu.co
     # Ejemplos validos: juan@gmail.com, maria@hotmail.com
     if correo.count("@") != 1:
         return False
+    
     partes        = correo.split("@")
     parte_antes   = partes[0]
     parte_despues = partes[1]
     if len(parte_antes) == 0:
         return False
-    if not parte_despues.endswith(".com"):
+    # if not parte_despues.endswith("udea.edu.co"): # En caso de necesitar una dereccion udea.edu.co se descomentarea
+    if not parte_despues.endswith(".com"): # Para que termine en .com
         return False
-    if parte_despues == ".com":
-        return False
+    
     return True
 
 
