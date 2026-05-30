@@ -1,12 +1,12 @@
 ==========================================
        CERTIFICADO DE DEVOLUCION         
 ==========================================
-Usuario      : Victor Espinosa
-Documento    : 1234567
+Usuario      : Lina Duque
+Documento    : 123456789
 Item         : Harry Potter
-ID del item  : LIB-RP52
-Fecha inicio : 2026-05-25 21:24:11
-Fecha devol. : 2026-05-25 21:24:33
+ID del item  : LIB-IFV1
+Fecha inicio : 2026-05-30 16:17:28
+Fecha devol. : 2026-05-30 16:18:35
 Dias usados  : 0 dias
 ==========================================
 Estado: Devolucion Exitosa

@@ -1,23 +1,16 @@
-# ============================================================
-# MODULO: admin.py
-# DESCRIPCION: Panel de administracion con login y reportes
-# ============================================================
+# admin.py
+# Panel de administracion: login y reportes del sistema
 
 import os
+import items
 
 
 def limpiar_pantalla():
-    """Limpia la consola segun el sistema operativo."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def login_admin():
-    """
-    Valida el acceso al panel de administracion.
-    Compara usuario y contrasena contra una lista predefinida.
-    Retorna True si el acceso es correcto, False si no.
-    """
-    # Lista de credenciales permitidas (usuario: contrasena)
+    # Lista de usuarios y contrasenas permitidos
     credenciales = {
         "admin":      "1234",
         "lina.duque": "udea2026",
@@ -31,7 +24,6 @@ def login_admin():
     usuario = input("Usuario: ").strip()
     clave   = input("Contrasena: ").strip()
 
-    # Verificar si el usuario existe y la contrasena coincide
     if usuario in credenciales:
         if credenciales[usuario] == clave:
             print("  Acceso concedido. Bienvenido, " + usuario + "!")
@@ -42,14 +34,13 @@ def login_admin():
 
 
 # ------------------------------------------------------------------
-# Funciones de reportes
+# Reportes del panel de administracion
 # ------------------------------------------------------------------
 
 def mostrar_metricas(prestamos, ventas):
-    """Muestra un resumen de metricas generales del sistema."""
+    # Muestra el resumen general de numeros del sistema
     total_prestamos = len(prestamos)
 
-    # Contar devueltos: prestamos que ya no estan activos
     total_devueltos = 0
     for p in prestamos:
         if p["activo"] == False:
@@ -57,7 +48,6 @@ def mostrar_metricas(prestamos, ventas):
 
     total_ventas = len(ventas)
 
-    # Calcular recaudo total sumando el campo 'total' de cada venta
     recaudo = 0
     for v in ventas:
         recaudo = recaudo + v["total"]
@@ -70,7 +60,7 @@ def mostrar_metricas(prestamos, ventas):
 
 
 def mostrar_lista_usuarios(usuarios):
-    """Muestra la tabla de todos los usuarios registrados."""
+    # Muestra todos los usuarios registrados en el sistema
     if len(usuarios) == 0:
         print("\n  No hay usuarios registrados.")
         return
@@ -89,12 +79,11 @@ def mostrar_lista_usuarios(usuarios):
 
 
 def mostrar_extremos_usuarios(usuarios):
-    """Muestra el usuario con mas y con menos prestamos realizados."""
+    # Muestra quien tiene mas y quien tiene menos prestamos
     if len(usuarios) == 0:
         print("\n  No hay usuarios para analizar.")
         return
 
-    # Buscar maximo y minimo recorriendo la lista
     usuario_mayor = usuarios[0]
     usuario_menor = usuarios[0]
 
@@ -116,18 +105,11 @@ def mostrar_extremos_usuarios(usuarios):
     print("    Prestamos : " + str(usuario_menor["prestamos_realizados"]))
 
 
-def registrar_item_admin(items):
-    """Llama al modulo items para registrar un nuevo item desde el panel admin."""
-    import items as modulo_items
-    modulo_items.registrar_item(items)
-
-
 # ------------------------------------------------------------------
 # Menu del panel de administracion
 # ------------------------------------------------------------------
 
-def menu_admin(usuarios, items, prestamos, ventas):
-    """Submenu del modulo administrativo."""
+def menu_admin(usuarios, list_items, prestamos, ventas):
     while True:
         print("\n" + "=" * 42)
         print("      PANEL DE ADMINISTRACION")
@@ -155,7 +137,7 @@ def menu_admin(usuarios, items, prestamos, ventas):
 
         elif opcion == "4":
             limpiar_pantalla()
-            registrar_item_admin(items)
+            items.registrar_item(list_items)
 
         elif opcion == "0":
             print("  Saliendo del panel administrativo...")

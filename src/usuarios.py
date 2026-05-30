@@ -1,7 +1,9 @@
-# ============================================================
-# MODULO: usuarios.py
-# DESCRIPCION: Registro y validacion de usuarios del sistema
-# ============================================================
+# usuarios.py
+# Registro y validacion de usuarios del sistema
+
+import csv
+import os
+from datetime import datetime
 
 
 # ------------------------------------------------------------------
@@ -9,85 +11,78 @@
 # ------------------------------------------------------------------
 
 def validar_nombre_apellido(texto):
-    """
-    Valida que el texto tenga al menos 3 caracteres y no contenga numeros.
-    Retorna True si es valido, False si no.
-    """
-    # Condicion 1: longitud minima de 3
+    # Verifica que el texto tenga al menos 3 letras y no tenga numeros
     if len(texto) < 3:
         return False
-
-    # Condicion 2: no puede tener numeros
     for caracter in texto:
         if caracter.isdigit():
             return False
-
     return True
 
 
 def validar_documento(doc):
-    """
-    Valida que el documento tenga entre 3 y 15 digitos y sea solo numeros.
-    """
-    # Condicion 1: solo numeros
+    # Verifica que el documento sea solo numeros y tenga entre 3 y 15 digitos
     if not doc.isdigit():
         return False
-
-    # Condicion 2: longitud entre 3 y 15
     if len(doc) < 3 or len(doc) > 15:
         return False
-
     return True
 
 
 def validar_correo(correo):
-    """
-    Que tenga el correo
-    """
-    # Condición 1: debe tener exactamente una arroba
-    if correo.endswith('@udea.edu.co'):
-        return True
-
-    return False
+    # Verifica que el correo tenga una @ y termine en .com
+    # Ejemplos validos: juan@gmail.com, maria@hotmail.com
+    if correo.count("@") != 1:
+        return False
+    partes        = correo.split("@")
+    parte_antes   = partes[0]
+    parte_despues = partes[1]
+    if len(parte_antes) == 0:
+        return False
+    if not parte_despues.endswith(".com"):
+        return False
+    if parte_despues == ".com":
+        return False
+    return True
 
 
 # ------------------------------------------------------------------
-# Funcion principal de registro
+# Guardar en CSV
+# ------------------------------------------------------------------
+
+def guardar_usuario_en_csv(usuario):
+    # Guarda los datos del usuario en data/usuarios.csv
+    # Si el archivo no existe lo crea con encabezados
+    # Si ya existe agrega una fila al final sin borrar lo anterior
+    ruta           = os.path.join("data", "usuarios.csv")
+    archivo_existe = os.path.exists(ruta)
+
+    with open(ruta, "a", newline="", encoding="utf-8") as archivo:
+        escritor = csv.writer(archivo)
+
+        if not archivo_existe:
+            escritor.writerow(["fecha", "documento", "nombre", "apellido", "correo", "dias_prestamo"])
+
+        escritor.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            usuario["doc"],
+            usuario["nombre"],
+            usuario["apellido"],
+            usuario["correo"],
+            str(usuario["tiempo"])
+        ])
+
+    print("  Usuario guardado en data/usuarios.csv")
+
+
+# ------------------------------------------------------------------
+# Registro de usuario
 # ------------------------------------------------------------------
 
 def registrar_usuario(usuarios):
-    """
-    Registra un nuevo usuario en el sistema.
-    Cada campo tiene su propio bucle: si el dato es incorrecto,
-    el programa muestra el error y vuelve a pedir ESE MISMO campo.
-    """
     print("\n--- Registro de Nuevo Usuario ---")
 
-    # --- Campo: Nombre ---
-    nombre = ""
-    while True:
-        nombre = input("Nombre: ").strip()
-        if validar_nombre_apellido(nombre):
-            break
-        else:
-            if len(nombre) < 3:
-                print("  ERROR: El nombre debe tener al menos 3 letras. Intente de nuevo.")
-            else:
-                print("  ERROR: El nombre no puede contener numeros. Intente de nuevo.")
-
-    # --- Campo: Apellido ---
-    apellido = ""
-    while True:
-        apellido = input("Apellido: ").strip()
-        if validar_nombre_apellido(apellido):
-            break
-        else:
-            if len(apellido) < 3:
-                print("  ERROR: El apellido debe tener al menos 3 letras. Intente de nuevo.")
-            else:
-                print("  ERROR: El apellido no puede contener numeros. Intente de nuevo.")
-
-    # --- Campo: Documento ---
+    # Campo: Documento
     doc = ""
     while True:
         doc = input("Numero de documento (solo numeros, 3-15 digitos): ").strip()
@@ -99,7 +94,7 @@ def registrar_usuario(usuarios):
                 print("  ERROR: El documento debe tener entre 3 y 15 digitos. Intente de nuevo.")
             continue
 
-        # Verificar que el documento no este duplicado
+        # Verificar que el documento no este ya registrado
         ya_existe = False
         for u in usuarios:
             if u["doc"] == doc:
@@ -111,7 +106,31 @@ def registrar_usuario(usuarios):
         else:
             break
 
-    # --- Campo: Correo ---
+    # Campo: Nombre
+    nombre = ""
+    while True:
+        nombre = input("Nombre: ").strip()
+        if validar_nombre_apellido(nombre):
+            break
+        else:
+            if len(nombre) < 3:
+                print("  ERROR: El nombre debe tener al menos 3 letras. Intente de nuevo.")
+            else:
+                print("  ERROR: El nombre no puede contener numeros. Intente de nuevo.")
+
+    # Campo: Apellido
+    apellido = ""
+    while True:
+        apellido = input("Apellido: ").strip()
+        if validar_nombre_apellido(apellido):
+            break
+        else:
+            if len(apellido) < 3:
+                print("  ERROR: El apellido debe tener al menos 3 letras. Intente de nuevo.")
+            else:
+                print("  ERROR: El apellido no puede contener numeros. Intente de nuevo.")
+
+    # Campo: Correo
     correo = ""
     while True:
         correo = input("Correo electronico (ej: nombre@gmail.com): ").strip()
@@ -120,7 +139,7 @@ def registrar_usuario(usuarios):
         else:
             print("  ERROR: Correo invalido. Debe tener '@' y terminar en '.com'. Intente de nuevo.")
 
-    # --- Campo: Tiempo de prestamo ---
+    # Campo: Tiempo de prestamo
     tiempo = 0
     while True:
         print("  Opciones de tiempo: 5, 10, 15 o 30 dias")
@@ -137,7 +156,7 @@ def registrar_usuario(usuarios):
         else:
             print("  ERROR: Tiempo no permitido. Solo se aceptan 5, 10, 15 o 30 dias.")
 
-    # --- Guardar usuario ---
+    # Guardar en memoria
     nuevo_usuario = {
         "doc":                  doc,
         "nombre":               nombre,
@@ -148,5 +167,8 @@ def registrar_usuario(usuarios):
     }
 
     usuarios.append(nuevo_usuario)
+
+    # Guardar en CSV
+    guardar_usuario_en_csv(nuevo_usuario)
 
     print("\n  Usuario '" + nombre + " " + apellido + "' registrado con exito!")

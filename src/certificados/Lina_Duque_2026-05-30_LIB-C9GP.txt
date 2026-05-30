@@ -1,0 +1,13 @@
+==========================================
+       CERTIFICADO DE DEVOLUCION         
+==========================================
+Usuario      : Lina Duque
+Documento    : 123456789
+Item         : Crepusculo
+ID del item  : LIB-C9GP
+Fecha inicio : 2026-05-30 16:12:40
+Fecha devol. : 2026-05-30 16:14:43
+Dias usados  : 0 dias
+==========================================
+Estado: Devolucion Exitosa
+==========================================

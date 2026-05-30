@@ -1,13 +1,15 @@
-# ============================================================
-# MODULO: items.py
-# DESCRIPCION: Registro de items (objetos a prestar)
-# ============================================================
+# items.py
+# Registro de items (objetos a prestar) en el inventario
 
 import random
 import string
+import csv
+import os
+from datetime import datetime
 
-# Diccionario de categorias disponibles
-# Clave: numero de opcion | Valor: (nombre de categoria, prefijo para el ID)
+# Categorias disponibles para clasificar los items
+# Clave: numero que escoge el usuario
+# Valor: (nombre de la categoria, prefijo para el ID)
 CATEGORIAS = {
     "1": ("Videojuegos",    "VID"),
     "2": ("Libros",         "LIB"),
@@ -19,10 +21,8 @@ CATEGORIAS = {
 
 
 def calcular_estado_difuso(funcionalidad, estetica):
-    """
-    Logica difusa simple: combina funcionalidad (70%) y estetica (30%)
-    para determinar la calidad del item con un puntaje ponderado.
-    """
+    # Logica difusa: combina funcionamiento (70%) y apariencia (30%)
+    # para determinar el estado general del item
     puntaje = (funcionalidad * 0.7) + (estetica * 0.3)
 
     if puntaje >= 9:
@@ -36,25 +36,44 @@ def calcular_estado_difuso(funcionalidad, estetica):
 
 
 def generar_id(prefijo):
-    """
-    Genera un ID unico con el prefijo de la categoria + 4 caracteres aleatorios.
-    Ejemplo: VID-A3K9, LIB-X7B2
-    """
+    # Genera un ID unico con el prefijo de la categoria + 4 caracteres aleatorios
+    # Ejemplos: VID-A3K9, LIB-X7B2, HER-QP12
     caracteres = string.ascii_uppercase + string.digits
-    aleatorio = ""
+    aleatorio  = ""
     for _ in range(4):
         aleatorio = aleatorio + random.choice(caracteres)
     return prefijo + "-" + aleatorio
 
 
+def guardar_item_en_csv(item):
+    # Guarda los datos del item en data/items.csv
+    # Si el archivo no existe lo crea con encabezados
+    # Si ya existe agrega una fila al final sin borrar lo anterior
+    ruta           = os.path.join("data", "items.csv")
+    archivo_existe = os.path.exists(ruta)
+
+    with open(ruta, "a", newline="", encoding="utf-8") as archivo:
+        escritor = csv.writer(archivo)
+
+        if not archivo_existe:
+            escritor.writerow(["fecha", "id", "nombre", "categoria", "precio", "estado"])
+
+        escritor.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            item["id"],
+            item["nombre"],
+            item["categoria"],
+            "{:.2f}".format(item["precio"]),
+            item["estado"]
+        ])
+
+    print("  Item guardado en data/items.csv")
+
+
 def registrar_item(items):
-    """
-    Registra un nuevo item en el inventario.
-    Valida cada campo con su propio bucle de reintento.
-    """
     print("\n--- Registro de Nuevo Item ---")
 
-    # --- Campo: Nombre del item ---
+    # Campo: Nombre del item
     nombre = ""
     while True:
         nombre = input("Nombre del item: ").strip()
@@ -63,7 +82,7 @@ def registrar_item(items):
         else:
             print("  ERROR: El nombre debe tener al menos 3 caracteres. Intente de nuevo.")
 
-    # --- Campo: Categoria ---
+    # Campo: Categoria
     cat_nombre  = ""
     cat_prefijo = ""
     while True:
@@ -79,12 +98,12 @@ def registrar_item(items):
         else:
             print("  ERROR: Opcion no valida. Debe elegir un numero del 1 al 6.")
 
-    # --- Campo: Precio de compra ---
+    # Campo: Precio de compra
     precio = 0.0
     while True:
         entrada = input("Precio de compra (solo numeros, ej: 25000): ").strip()
 
-        # Verificar que sea un numero valido (puede tener punto decimal)
+        # Verificar manualmente que sea un numero valido
         es_numero = True
         puntos    = 0
         for caracter in entrada:
@@ -105,7 +124,7 @@ def registrar_item(items):
         else:
             break
 
-    # --- Campo: Estado del item (logica difusa) ---
+    # Campo: Estado del item con logica difusa
     print("\n  Valoracion del estado del item (escala del 1 al 10):")
 
     funcionalidad = 0
@@ -132,10 +151,9 @@ def registrar_item(items):
         else:
             print("  ERROR: El valor debe estar entre 1 y 10.")
 
-    # Calcular estado final con logica difusa
     estado_final = calcular_estado_difuso(funcionalidad, estetica)
 
-    # --- Crear y guardar el item ---
+    # Guardar en memoria
     nuevo_item = {
         "id":         generar_id(cat_prefijo),
         "nombre":     nombre,
@@ -146,6 +164,9 @@ def registrar_item(items):
     }
 
     items.append(nuevo_item)
+
+    # Guardar en CSV
+    guardar_item_en_csv(nuevo_item)
 
     print("\n  Item registrado con exito!")
     print("  ID asignado : " + nuevo_item["id"])
